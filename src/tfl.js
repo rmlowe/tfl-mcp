@@ -71,7 +71,7 @@ function leg(l) {
     disruptions: array(l.disruptions).map(disruption),
     routeOptions: array(l.routeOptions).map(r => ({
       name: text(r.name), direction: text(r.direction),
-      lineIds: array(r.lineIdentifier).map(i => text(i.id)).filter(Boolean),
+      lineIds: [text(r.lineIdentifier?.id)].filter(Boolean),
     })),
     stops: array(l.path?.stopPoints).map(p => ({ name: text(p.name), id: text(p.id) })),
   };

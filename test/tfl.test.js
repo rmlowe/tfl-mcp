@@ -9,7 +9,7 @@ const journey = {
   legs: [{ duration: 40, mode: { id: 'tube' }, departurePoint: { commonName: 'Mill Hill East', naptanId: 'origin' },
     arrivalPoint: { commonName: 'Bank', naptanId: 'destination' },
     instruction: { summary: 'Northern line via Bank', steps: [{ description: 'Change at Finchley Central' }] },
-    routeOptions: [{ name: 'Northern', direction: 'southbound', lineIdentifier: [{ id: 'northern' }] }, { name: 'Alternative' }],
+    routeOptions: [{ name: 'Northern', direction: 'southbound', lineIdentifier: { id: 'northern' } }, { name: 'Alternative' }],
     disruptions: [{ description: 'Branch disruption', lastUpdate: '2026-10-10T19:00:00' }],
     path: { stopPoints: [{ name: 'Finchley Central', id: 'interchange' }] },
   }],
@@ -51,6 +51,8 @@ test('arrival requests map to documented TfL parameters and preserve evidence', 
   const leg = result.journeys[0].legs[0];
   assert.equal(result.retrievedAt, retrievedAt);
   assert.equal(leg.routeOptions.length, 2);
+  assert.deepEqual(leg.routeOptions[0].lineIds, ['northern']);
+  assert.deepEqual(leg.routeOptions[1].lineIds, []);
   assert.equal(leg.disruptions[0].description, 'Branch disruption');
   assert.equal(leg.isDisrupted, null);
   assert.equal(leg.stops[0].name, 'Finchley Central');
