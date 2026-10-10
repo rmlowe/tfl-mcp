@@ -1,0 +1,10 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tfl-mcp",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-10",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": { "MCP_AUTH_MODE": "disabled" },
+  "secrets": { "required": ["TFL_API_KEY"] },
+  "observability": { "enabled": false }
+}
