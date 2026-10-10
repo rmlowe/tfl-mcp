@@ -47,6 +47,8 @@ npm run build
 
 The build is a Wrangler dry run and performs no deployment. Tests use mocked TfL responses and locally signed Access assertions; they do not call TfL or prove real-client OAuth compatibility.
 
+CI also runs `npm audit --audit-level=high`. Scoped overrides upgrade the MCP client and legacy SDK peers brought in by `agents` to 2.2.0 and 1.31.0 for [GHSA-6qxp-vccf-f47h](https://github.com/advisories/GHSA-6qxp-vccf-f47h). This advisory affects outbound OAuth clients, not this server-only Worker. The overrides keep the dependency tree patched without downgrading `agents` or changing the server SDK. Remove them when a compatible `agents` release declares patched peer versions; its 0.28.0 release still declares the affected versions. Recheck installation, audit, tests and the Worker build when updating.
+
 Obtain your own key from the [TfL API portal](https://api-portal.tfl.gov.uk/). Create an ignored `.dev.vars` containing:
 
 ```dotenv
