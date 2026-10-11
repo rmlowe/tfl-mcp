@@ -4,7 +4,11 @@
   "main": "src/index.js",
   "compatibility_date": "2026-10-10",
   "compatibility_flags": ["nodejs_compat"],
-  "vars": { "MCP_AUTH_MODE": "disabled" },
+  "vars": {
+    "MCP_AUTH_MODE": "access",
+    "MCP_ACCESS_TEAM_DOMAIN": "https://frosty-poetry-2e73.cloudflareaccess.com",
+    "MCP_ACCESS_AUD": "d05c70e4a209e6086fe4ec0bed3b1d6abeae5206798e4b8ee81ba6a69ac46b68"
+  },
   "secrets": { "required": ["TFL_API_KEY"] },
   "observability": { "enabled": false }
 }

@@ -36,7 +36,7 @@ export function createTflClient(env, { fetcher = (...args) => fetch(...args), ti
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const response = await fetcher(url.toString(), {
-        headers: { Accept: 'application/json' }, signal: controller.signal, redirect: 'error',
+        headers: { Accept: 'application/json' }, signal: controller.signal, redirect: 'manual',
       });
       if (response.status === 429) throw new TflError('rate_limited', 'TfL rate limit reached. Try again later.');
       if (!response.ok && response.status !== 300) throw new TflError('upstream_error', 'TfL could not complete the request. Try again later.');
@@ -107,11 +107,13 @@ export async function planJourney(raw, request, now) {
   if (!Array.isArray(response.data.journeys)) throw new TflError('invalid_response', 'TfL returned no valid journey result.');
   const journeys = response.data.journeys.map(j => {
     if (!j || !Array.isArray(j.legs) || !j.legs.length || !text(j.startDateTime) || !text(j.arrivalDateTime)
-        || number(j.duration) === null || j.legs.some(l => !l || typeof l !== 'object')) {
+      || number(j.duration) === null || j.legs.some(l => !l || typeof l !== 'object')) {
       throw new TflError('invalid_response', 'TfL returned an incomplete journey.');
     }
-    return { departureTime: j.startDateTime, arrivalTime: j.arrivalDateTime,
-      durationMinutes: j.duration, legs: j.legs.map(leg) };
+    return {
+      departureTime: j.startDateTime, arrivalTime: j.arrivalDateTime,
+      durationMinutes: j.duration, legs: j.legs.map(leg)
+    };
   });
   return { ...base, outcome: journeys.length ? 'journeys_found' : 'no_journeys', journeys };
 }

@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=24" },
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "dev": "wrangler dev",
     "test": "node --test",
@@ -16,11 +18,17 @@
     "jose": "6.2.12",
     "zod": "4.6.5"
   },
-  "devDependencies": { "wrangler": "^4.0.0" },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  },
   "overrides": {
     "agents": {
       "@modelcontextprotocol/client": "2.2.0",
       "@modelcontextprotocol/sdk": "1.31.0"
     }
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "workerd@1.20261006.1": true
   }
 }
