@@ -61,17 +61,19 @@ Generate the bearer token locally (for example `openssl rand -hex 32`), then run
 
 ## Authentication and deployment
 
-The committed configuration sets `MCP_AUTH_MODE=disabled`. Disabled or invalid auth configuration returns 404. No Cloudflare account, audience, personal location or credential is hard-coded.
+The committed configuration uses Access mode for the deployed TfL Worker. The team domain and application audience are public identifiers; the TfL API key remains a Cloudflare secret. Production uses workers.dev and preview URLs are disabled. Disabled or invalid auth configuration returns 404.
+
+For a new deployment or fork, first set `MCP_AUTH_MODE=disabled` and replace the Access identifiers with your own before activation.
 
 | Mode | Configuration | Behaviour |
 | --- | --- | --- |
-| `disabled` | Default deployment setting | `/mcp` returns 404 |
+| `disabled` | Explicitly disables MCP | `/mcp` returns 404 |
 | `bearer` | `MCP_AUTH_TOKEN`, minimum 32 characters | Dedicated local/Inspector token; constant-time digest comparison |
 | `access` | `MCP_ACCESS_TEAM_DOMAIN`, `MCP_ACCESS_AUD` | Validates signed Cloudflare Access assertions; no bearer fallback |
 
 If the mode variable is absent, the authentication helper defaults to bearer mode, which remains disabled without a strong token. Public deployment should use Access mode.
 
-Staged deployment:
+Staged deployment for a new installation:
 
 1. Authenticate Wrangler to your Cloudflare account. Store the key with `npx wrangler secret put TFL_API_KEY` and deploy the Worker with MCP still disabled (`npm run deploy`).
 2. Create a **separate** Cloudflare Access application for the Worker and configure the approved-user policy. Protect all enabled hostnames; disable unused preview URLs. Confirm Access protection before activation.
@@ -102,3 +104,9 @@ Rollback: set `MCP_AUTH_MODE=disabled` and deploy, leaving Access protection in 
 - Real MCP client sign-in, discovery, both tool calls and token refresh.
 
 The MCP/authentication pattern is adapted from the owner's Home Climate project. TfL request code is implemented independently against the [official API specification](https://api.tfl.gov.uk/swagger/docs/v1); the reviewed third-party TfL server was not copied.
+
+## Runtime regression coverage
+
+`npm test` includes a Miniflare/workerd test that runs the production TfL client and validates its request options using the Workers `Request` implementation. Responses are fixtures, so no TfL key or network access is needed. It covers success, rejected redirects and TfL HTTP 300 disambiguation. This catches runtime differences that Node-only mocks miss.
+
+The version-pinned `allowScripts` entries approve esbuild and workerd binary setup. Review and update these approvals when their versions change.

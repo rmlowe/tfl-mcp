@@ -109,7 +109,7 @@ test('client authenticates only to TfL, disables redirects, and records retrieva
     const u = new URL(url);
     assert.equal(u.origin, 'https://api.tfl.gov.uk');
     assert.equal(u.searchParams.get('app_key'), 'test-secret');
-    assert.equal(init.redirect, 'error');
+    assert.equal(init.redirect, 'manual');
     return Response.json({ journeys: [] });
   } });
   const r = await client('/Journey/JourneyResults/A/to/B');
